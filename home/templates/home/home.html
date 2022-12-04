@@ -1,0 +1,45 @@
+{% extends 'home/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+   {% for post in news %}
+      <div class="alert alert-light">
+        <h1>{{ post.title }}</h1>
+        <hr>
+        <p>{{ post.text|truncatewords:50 }}</p>
+        <hr>
+        <div class="row">
+          <div>
+            <img src="{{ post.auther.profile.img.url }}" alt="{{ post.auther }}" class="user_images">
+          </div>
+          <div class="mt-2">
+            <span class="text-muted">Публикация: {{ post.date|date:'j F Y, время: H:i:s' }}</span>
+            <p><b>Автор: </b><mark>{{ post.auther.first_name }}</mark></p>
+          </div>
+            <a href="{% url 'news-detail' post.id %}" class="btn btn-outline-dark">Читать дальше</a>
+        </div>
+      </div>
+  {% endfor %}
+
+  {% if is_paginated %}
+    {% if page_obj.has_previous %}
+      <a href="{% url 'home' %}" class="btn btn-outline-dark">Начало</a>
+      <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-dark">Предыдущая</a>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+      {% if num == page_obj.number %}
+        <button class="btn btn-dark">{{ num }}</button>
+      {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+        <a href="?page={{ num }}" class="btn btn-outline-dark">{{ num }}</a>
+      {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-dark">Следующая</a>
+      <a href="?page={{ page_obj.paginator.num_pages}}" class="btn btn-outline-dark">Последняя</a>
+    {% endif %}
+  {% endif %}
+
+{% endblock %}

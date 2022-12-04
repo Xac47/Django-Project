@@ -1,0 +1,28 @@
+{% extends 'home/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+<h1>{{ title }}</h1>
+<div class="d-flex text-muted pt-3">
+      <img class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="64" height="64" src="{{ user.profile.img.url }}">
+
+      <p class="pb-3 mb-0 small lh-sm border-bottom">
+        <strong class="d-block text-gray-dark">Ваш логин: {{ user.username }}</strong>
+        <b>E-mail: </b>{{ user.email }}
+          <br>
+        <b>Имя: </b>{{ user.first_name }}
+      </p>
+    </div>
+<p>Имя: {{ user.first_name }}</p>
+<p>Логин: {{ user.username }}</p>
+<p>E-mail: {{ user.email }}</p>
+<form method="post" enctype="multipart/form-data" class="form-signup">
+  {% csrf_token %}
+  {{ updateUserForm.as_p }}
+  {{ profileImageForm.as_p }}
+  <button class="btn btn-outline-dark" type="submit">Изменить</button>
+</form>
+
+{% endblock %}

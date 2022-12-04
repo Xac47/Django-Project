@@ -1,0 +1,17 @@
+{% extends 'home/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<!--{% if user.is_authenticated %}-->
+<h1>{{ title }}</h1>
+<form method="post" class="form-signup">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button class="btn btn-outline-dark" type="submit">Добавить статью</button>
+</form>
+<!--{% else %}-->
+<!--<h2>Чтобы добавить статью нужно авторизоваться</h2>-->
+<!--<a href="{% url 'login' %}" class="btn btn-outline-dark">Войти в аккаунт</a>-->
+<!--{% endif %}-->
+{% endblock %}

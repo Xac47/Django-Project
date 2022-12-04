@@ -1,0 +1,8 @@
+{% extends 'home/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ text }}</h1>
+    <a href="{% url 'login' %}">Войти в личный кабинет</a>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'home/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+<form method="post" class="form-signup">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button class="btn btn-outline-dark" type="submit">Зарегистрироваться</button>
+</form>
+<hr>
+<p>Уже зарегистрированы? <a href="{% url 'login' %}">Войти в личный кабинет</a></p>
+{% endblock %}

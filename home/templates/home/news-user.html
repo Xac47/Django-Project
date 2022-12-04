@@ -1,0 +1,26 @@
+{% extends 'home/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<h4>Вы написали {{ news.count }} статьи</h4>
+<hr>
+   {% for post in news %}
+      <div class="alert alert-light">
+        <h1>{{ post.title }}</h1>
+        <hr>
+        <p>{{ post.text|truncatewords:50 }}</p>
+        <hr>
+        <div class="row">
+          <div>
+            <img src="{{ post.auther.profile.img.url }}" alt="{{ post.auther }}" class="user_images">
+          </div>
+          <div class="mt-2">
+            <span class="text-muted">Публикация: {{ post.date|date:'j F Y, время: H:i:s' }}</span>
+            <p><b>Автор: </b><mark>{{ post.auther.first_name }}</mark></p>
+          </div>
+            <a href="{% url 'news-detail' post.id %}" class="btn btn-outline-dark">Читать дальше</a>
+        </div>
+      </div>
+  {% endfor %}
+{% endblock %}
