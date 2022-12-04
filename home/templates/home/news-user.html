@@ -3,7 +3,9 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-{% if news %}
+{% if news.count == 1 %}
+<h4>Вы написали {{ news.count }} статью</h4>
+{% elif news.count > 1 %}
 <h4>Вы написали {{ news.count }} статьи</h4>
 {% else %}
 <h4>У вас нет не единой статьи</h4>
