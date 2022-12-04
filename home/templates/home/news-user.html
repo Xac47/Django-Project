@@ -3,7 +3,11 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+{% if news %}
 <h4>Вы написали {{ news.count }} статьи</h4>
+{% else %}
+<h4>У вас нет не единой статьи</h4>
+{% endif %}
 <hr>
    {% for post in news %}
       <div class="alert alert-light">
