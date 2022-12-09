@@ -30,7 +30,7 @@ class NewsUserListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         # из ссылки забирает id и присваивает к переменной user,
-        user = get_object_or_404(User, pk=self.kwargs.get('id'))
+        user = get_object_or_404(User, pk=self.kwargs['id'])
         # потом возвращает все статьи где auther равен тому id который мы передаем через переменную user, и под конец сортирует по убывание id все статьи
         return News.objects.filter(auther=user).order_by('-pk')
 
@@ -107,7 +107,6 @@ class NewsDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == news.auther:
             return True
         return False
-
 
 
     def get_context_data(self, **kwargs):

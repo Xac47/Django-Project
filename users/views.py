@@ -44,7 +44,6 @@ class UserSignupView(CreateView):
 class UserLoginView(LoginView):
     form_class = UserLoginForm
     template_name = 'users/login.html'
-    # success_url = 'home' /
 
 
     def get_context_data(self, *, object_list=None, **kwargs):
