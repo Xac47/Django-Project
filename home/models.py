@@ -15,8 +15,9 @@ class News(models.Model):
     #     ('Ж', 'Женский'),
     # )
     #
-    # sex = models.CharField(max_length=3, choices=sex_choice)
+    # sex = models.CharField(max_length=1, choices=sex_choice)
 
+    # переход после добавление или обновление статьи
     def get_absolute_url(self):
         return reverse('news-detail', kwargs={'pk': self.pk})
 
