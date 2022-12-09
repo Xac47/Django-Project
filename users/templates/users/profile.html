@@ -15,9 +15,6 @@
         <b>Имя: </b>{{ user.first_name }}
       </p>
     </div>
-<p>Имя: {{ user.first_name }}</p>
-<p>Логин: {{ user.username }}</p>
-<p>E-mail: {{ user.email }}</p>
 <form method="post" enctype="multipart/form-data" class="form-signup">
   {% csrf_token %}
   {{ updateUserForm.as_p }}
