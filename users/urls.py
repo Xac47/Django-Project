@@ -6,7 +6,7 @@ from . import views
 urlpatterns = [
     path('signup/', views.UserSignupView.as_view(), name='signup'),
     path('login/', views.UserLoginView.as_view(), name='login'),
-    path('exit/', views.UserLogoutView.as_view(), name='exit'),
+    path('exit/', views.exit, name='exit'),
     path('profile/', views.profile, name='profile'),
     path('pass-reset/', views.PassResetView.as_view(), name='pass-reset'),
     path('password_reset_done/', PasswordResetDoneView.as_view(template_name='users/password-reset-done.html'), name='password_reset_done'),

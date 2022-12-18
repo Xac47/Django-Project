@@ -1,10 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetConfirmView
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, DetailView
-from django.contrib import messages
+from django.contrib import messages, auth
 
 from .forms import UserSignupForm, UserLoginForm, UserUpdateForm, ProfileImageForm, PassResetForm, PassResetConfirmForm
 
@@ -52,15 +53,20 @@ class UserLoginView(LoginView):
 
         return ctx
 
-class UserLogoutView(LogoutView):
-    template_name = 'users/exit.html'
+# class UserLogoutView(LogoutView):
+#     template_name = 'users/exit.html'
+#
+#     def get_context_data(self, *, object_list=None, **kwargs):
+#         ctx = super(UserLogoutView, self).get_context_data(**kwargs)
+#         ctx['title'] = 'Выход'
+#         ctx['text'] = 'Вы успешно вышли из аккаунта'
+#
+#         return ctx
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        ctx = super(UserLogoutView, self).get_context_data(**kwargs)
-        ctx['title'] = 'Выход'
-        ctx['text'] = 'Вы успешно вышли из аккаунта'
+def exit(request):
+    auth.logout(request)
+    return HttpResponseRedirect(reverse('home'))
 
-        return ctx
 
 @login_required
 def profile(request):
