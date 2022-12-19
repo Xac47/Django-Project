@@ -3,10 +3,10 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-{% if news.count == 1 %}
-<h4>Вы написали {{ news.count }} статью</h4>
-{% elif news.count > 1 %}
-<h4>Вы написали {{ news.count }} статьи</h4>
+{% if count == 1 %}
+<h4>Вы написали {{ count }} статью</h4>
+{% elif count > 1 %}
+<h4>Вы написали {{ count }} статьи</h4>
 {% else %}
 <h4>У вас нет не единой статьи</h4>
 {% endif %}
@@ -29,4 +29,25 @@
         </div>
       </div>
   {% endfor %}
+
+{% if is_paginated %}
+    {% if page_obj.has_previous %}
+      <a href="{% url 'home' %}" class="btn btn-outline-dark">Начало</a>
+      <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-dark">Предыдущая</a>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+      {% if num == page_obj.number %}
+        <button class="btn btn-dark">{{ num }}</button>
+      {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+        <a href="?page={{ num }}" class="btn btn-outline-dark">{{ num }}</a>
+      {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-dark">Следующая</a>
+      <a href="?page={{ page_obj.paginator.num_pages}}" class="btn btn-outline-dark">Последняя</a>
+    {% endif %}
+  {% endif %}
+
 {% endblock %}
