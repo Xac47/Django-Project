@@ -23,21 +23,22 @@ class NewsListView(ListView):
 
 class NewsUserListView(LoginRequiredMixin, ListView):
     model = News
-    context_object_name = 'news'
+    # context_object_name = 'news'
     template_name = 'home/news-user.html'
     paginate_by = 5
 
 
-    def get_queryset(self):
-        # из ссылки забирает id и присваивает к переменной user,
-        user = get_object_or_404(User, pk=self.kwargs['id'])
-        # потом возвращает все статьи где auther равен тому id который мы передаем через переменную user, и под конец сортирует по убывание id все статьи
-        return News.objects.filter(auther=user).order_by('-pk')
+    # def get_queryset(self):
+    #     # из ссылки забирает id и присваивает к переменной user,
+    #     user = get_object_or_404(User, pk=self.kwargs['id'])
+    #     # потом возвращает все статьи где auther равен тому id который мы передаем через переменную user, и под конец сортирует по убывание id все статьи
+    #     return News.objects.filter(auther=user).order_by('-pk')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         ctx = super(NewsUserListView, self).get_context_data(**kwargs)
         ctx['title'] = 'Мои статьи'
-        ctx['count'] = len(News.objects.filter(auther=self.kwargs['id']))
+        ctx['count'] = len(News.objects.filter(auther=self.request.user))
+        ctx['my_news'] = News.objects.filter(auther=self.request.user).order_by('-pk')
 
         return ctx
 
