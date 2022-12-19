@@ -23,7 +23,7 @@
               <a class="nav-link" href="{% url 'profile' %}">Профиль</a>
             </li>
             <li>
-              <a class="nav-link" href="{% url 'news-user' %}">Мои статьи</a>
+              <a class="nav-link" href="{% url 'news-user' user.pk %}">Мои статьи</a>
             </li>
             <li>
               <a class="nav-link" href="{% url 'news-created' %}">Добавить статью</a>

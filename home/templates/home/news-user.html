@@ -4,14 +4,14 @@
 
 {% block content %}
 {% if count == 1 %}
-<h4>Вы написали {{ count }} статью</h4>
+<h4>Написано {{ count }} статья</h4>
 {% elif count > 1 %}
-<h4>Вы написали {{ count }} статьи</h4>
+<h4>Написано {{ count }} статьи</h4>
 {% else %}
-<h4>У вас нет не единой статьи</h4>
+<h4>Нет не единой статьи</h4>
 {% endif %}
 <hr>
-   {% for post in my_news %}
+   {% for post in news %}
       <div class="alert alert-light">
         <h1>{{ post.title }}</h1>
         <hr>
