@@ -48,6 +48,7 @@
 {% block category %}
     <h1 class="my-4">Категории</h1>
     <div class="list-group">
+            <a href="{% url 'home' %}" class="list-group-item">Все</a>
         {% for category in categories %}
             <a href="{% url 'home' category.name %}" class="list-group-item">{{ category.name }}</a>
         {% endfor %}

@@ -17,7 +17,7 @@ class NewsListView(ListView):
     def get_queryset(self):
         queryset = super(NewsListView, self).get_queryset()
         category = self.kwargs.get('category')
-        return News.objects.filter(category__name=category) if category else queryset
+        return News.objects.filter(category__name=category).order_by('-pk') if category else queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):
         ctx = super(NewsListView, self).get_context_data(**kwargs)
@@ -121,5 +121,5 @@ class NewsDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
         return ctx
 
-class CommentsView(CreateView):
+class CommentCreateView(CreateView):
     pass
