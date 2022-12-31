@@ -16,6 +16,7 @@
           <div class="mt-2">
             <span class="text-muted">Публикация: {{ post.date|date:'j F Y, время: H:i:s' }}</span>
             <p><b>Автор: </b><mark><a href="{% url 'news-user' post.auther.pk %}">{{ post.auther.first_name }}</a></mark></p>
+            <p><b>Категория: </b>{{ post.category }}</p>
           </div>
             <a href="{% url 'news-detail' post.id %}" class="btn btn-outline-dark">Читать дальше</a>
         </div>
@@ -42,4 +43,13 @@
     {% endif %}
   {% endif %}
 
+{% endblock %}
+
+{% block category %}
+    <h1 class="my-4">Категории</h1>
+    <div class="list-group">
+        {% for category in categories %}
+            <a href="{% url 'home' category.name %}" class="list-group-item">{{ category.name }}</a>
+        {% endfor %}
+    </div>
 {% endblock %}

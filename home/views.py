@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from .forms import NewsCreateForm
-from .models import News
+from .models import News, Category
 
 
 class NewsListView(ListView):
@@ -14,9 +14,15 @@ class NewsListView(ListView):
     ordering = ['-pk']
     paginate_by = 5
 
+    def get_queryset(self):
+        queryset = super(NewsListView, self).get_queryset()
+        category = self.kwargs.get('category')
+        return News.objects.filter(category__name=category) if category else queryset
+
     def get_context_data(self, *, object_list=None, **kwargs):
         ctx = super(NewsListView, self).get_context_data(**kwargs)
         ctx['title'] = 'Главная страница'
+        ctx['categories'] = Category.objects.all()
 
         return ctx
 
@@ -29,14 +35,13 @@ class NewsUserListView(LoginRequiredMixin, ListView):
 
 
     def get_queryset(self):
-        # из ссылки забирает id и присваивает к переменной user,
-        user = get_object_or_404(User, pk=self.kwargs['pk'])
-        # потом возвращает все статьи где auther равен тому id который мы передаем через переменную user, и под конец сортирует по убывание id все статьи
+        user = get_object_or_404(User, pk=self.kwargs['pk']) # берет из адресной строки pk
         return News.objects.filter(auther=user).order_by('-pk')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         ctx = super(NewsUserListView, self).get_context_data(**kwargs)
         ctx['title'] = 'Мои статьи'
+        ctx['categories'] = Category.objects.all()
         ctx['count'] = len(News.objects.filter(auther=self.kwargs['pk']))
 
         return ctx
@@ -115,3 +120,6 @@ class NewsDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         ctx['title'] = 'Удалить статью'
 
         return ctx
+
+class CommentsView(CreateView):
+    pass

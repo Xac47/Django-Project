@@ -9,6 +9,7 @@ class News(models.Model):
     text = models.TextField(verbose_name='Описание')
     date = models.DateTimeField(default=timezone.now)
     auther = models.ForeignKey(User, verbose_name='Автор', on_delete=models.CASCADE)
+    category = models.ForeignKey('Category', on_delete=models.CASCADE, null=True)
 
     # sex_choice = (
     #     ('М', 'Мужской'),
@@ -28,3 +29,25 @@ class News(models.Model):
         verbose_name = 'Статья'
         verbose_name_plural = 'Статьи'
 
+class Category(models.Model):
+    name = models.CharField('Категория', max_length=80, unique=True)
+
+    class Meta:
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
+
+    def __str__(self):
+        return self.name
+
+class CommentsPostsModel(models.Model):
+    text = models.TextField(verbose_name='комментарии')
+    date = models.DateTimeField(auto_now_add=True)
+    post = models.ForeignKey(News, on_delete=models.CASCADE)
+    auther = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Коммент'
+        verbose_name_plural = 'Комментарии'
+
+    def __str__(self):
+        return f'Текст : {self.text} | Автор : {self.auther}'

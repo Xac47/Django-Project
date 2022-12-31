@@ -1,11 +1,11 @@
 from django import forms
 
-from home.models import News
+from home.models import News, Category
 
 
 class NewsCreateForm(forms.ModelForm):
     title = forms.CharField(
-        min_length=8,
+        min_length=4,
         max_length=80,
         required=True,
         label='',
@@ -19,6 +19,19 @@ class NewsCreateForm(forms.ModelForm):
         widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Описание для статьи'})
     )
 
+    category = forms.ModelChoiceField(
+        Category.objects.all(),
+        label='Категория'
+    )
+
+
     class Meta:
         model = News
-        fields = ['title', 'text']
+        fields = ['title', 'text', 'category']
+
+class CommentsPostsForm(forms.ModelForm):
+    text = forms.CharField(
+        required=False,
+        label='',
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Комментарии'})
+    )
