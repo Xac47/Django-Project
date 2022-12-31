@@ -57,19 +57,19 @@ class UserLoginForm(AuthenticationForm):
 
 class UserUpdateForm(forms.ModelForm):
     username = forms.CharField(
-        label='',
+        label='Логин',
         required=True,
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Введите новый логин'})
     )
 
     email = forms.EmailField(
-        label='',
+        label='Email',
         required=True,
         widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Введите новый email'})
     )
 
     first_name = forms.CharField(
-        label='',
+        label='Имя',
         required=True,
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Введите новое имя'})
     )
