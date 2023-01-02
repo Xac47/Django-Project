@@ -16,12 +16,14 @@
         <div class="mt-2">
            <span class="text-muted">Публикация: {{ post.date|date:'j F Y, время: H:i:s' }}</span>
            <p><b>Автор:</b> <mark>{{ post.auther.first_name }}</mark></p>
+           <p><b>Категория: </b>{{ post.category }}</p>
         </div>
       </div>
         {% if post.auther == user %}
         <hr>
         <a href="{% url 'news-update' post.id %}" class="btn btn-outline-info">Обновить статью</a>
         <a href="{% url 'news-delete' post.id %}" class="btn btn-outline-danger">Удалить статью</a>
+
         {% endif %}
     </div>
 

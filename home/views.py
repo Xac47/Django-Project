@@ -1,10 +1,12 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from .forms import NewsCreateForm
-from .models import News, Category
+from .forms import NewsCreateForm, CommentsPostsForm
+from .models import News, Category, CommentsPostsModel, Favorites
 
 
 class NewsListView(ListView):
@@ -16,7 +18,7 @@ class NewsListView(ListView):
 
     def get_queryset(self):
         queryset = super(NewsListView, self).get_queryset()
-        category = self.kwargs.get('category')
+        category = self.kwargs.get('category_name')
         return News.objects.filter(category__name=category).order_by('-pk') if category else queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -36,7 +38,7 @@ class NewsUserListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         user = get_object_or_404(User, pk=self.kwargs['pk']) # берет из адресной строки pk
-        return News.objects.filter(auther=user).order_by('-pk')
+        return News.objects.filter(auther=user).order_by('-pk') if not self.kwargs.get('category_name') else News.objects.filter(auther=user, category__name=self.kwargs['category_name']).order_by('-pk')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         ctx = super(NewsUserListView, self).get_context_data(**kwargs)
@@ -121,5 +123,79 @@ class NewsDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
         return ctx
 
-class CommentCreateView(CreateView):
-    pass
+
+@login_required
+def favorites_add(request, pk):
+    news = News.objects.get(pk=pk)
+    favorites = Favorites.objects.filter(user=request.user, post=news)
+
+    if not favorites.exists():
+        Favorites.objects.create(user=request.user, post=news).save()
+    else:
+        favorites.delete()
+
+    return HttpResponseRedirect(request.META['HTTP_REFERER']) # возвращает пользователя на ту страницу в котором он совершил данную операция
+
+@login_required
+def favorites_list(request, pk, category_name=None):
+    if category_name:
+        favorites = Favorites.objects.filter(user=pk, post__category__name=category_name).order_by('-pk')
+    else:
+        favorites = Favorites.objects.filter(user=pk).order_by('-pk')
+
+    context = {
+                'favorites_list': favorites,
+                'title': 'Избранные',
+                'categories': Category.objects.all(),
+               }
+
+    return render(request, 'home/news-favorites.html', context)
+
+# class CommentCreateView(CreateView):
+#     model = CommentsPostsModel
+#     template_name = 'home/create-comment.html'
+#     form_class = CommentsPostsForm
+#
+#     def get_context_data(self, **kwargs):
+#         ctx = super(CommentCreateView, self).get_context_data()
+#         ctx['post'] = self.kwargs['pk']
+#         ctx['comments'] = CommentsPostsModel.objects.filter(post=self.kwargs['pk'])
+#         return ctx
+#
+#     def form_valid(self, form):
+#         form.instance.auther, form.instance.post = self.request.user, self.kwargs['pk']
+#         return super().form_valid(form)
+
+# def createComment(request, pk):
+#     if request.method == 'POST':
+#         comments = CommentsPostsModel.objects.filter(post=request.GET['pk'])
+#         form = CommentsPostsForm(request.POST['text'], pk, request.user)
+#         if form.is_valid():
+#             form.save()
+#     else:
+#         form = CommentsPostsForm()
+#         comments = CommentsPostsModel.objects.filter(post=request.GET['pk'])
+#         print(request.GET)
+#
+#     context = {
+#         'form': form,
+#         'comments': comments,
+#     }
+#
+#     return render(request, 'home/create-comment.html', context)
+
+# class CommentListView(ListView):
+#     model = CommentsPostsModel
+#     template_name = 'home/list-comment.html'
+#     context_object_name = 'comments'
+#
+#     def get_queryset(self):
+#         pk = self.kwargs['pk']
+#         return CommentsPostsModel.objects.filter(post=pk)
+#
+#     def get_context_data(self, *, object_list=None, **kwargs):
+#         ctx = super(CommentListView, self).get_context_data()
+#         ctx['form'] = CommentsPostsForm()
+#
+#         return ctx
+#

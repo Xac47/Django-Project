@@ -1,6 +1,6 @@
 from django import forms
 
-from home.models import News, Category
+from home.models import News, Category, CommentsPostsModel
 
 
 class NewsCreateForm(forms.ModelForm):
@@ -35,3 +35,7 @@ class CommentsPostsForm(forms.ModelForm):
         label='',
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Комментарии'})
     )
+
+    class Meta:
+        model = CommentsPostsModel
+        fields = ('text',)

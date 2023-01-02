@@ -4,6 +4,9 @@ from django.db import models
 from django.utils import timezone
 from django.urls import reverse
 
+from users.models import Profile
+
+
 class News(models.Model):
     title = models.CharField(verbose_name='Заголовок',max_length=80)
     text = models.TextField(verbose_name='Описание')
@@ -51,3 +54,15 @@ class CommentsPostsModel(models.Model):
 
     def __str__(self):
         return f'Текст : {self.text} | Автор : {self.auther}'
+
+
+class Favorites(models.Model):
+    post = models.ForeignKey(News, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранные'
+
+    def __str__(self):
+        return self.post.title

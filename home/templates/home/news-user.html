@@ -4,7 +4,7 @@
 
 {% block content %}
 {% if count == 1 %}
-<h4>Написано {{ count }} статья</h4>
+<h4>Всего написано {{ count }} статья</h4>
 {% elif count > 1 %}
 <h4>Написано {{ count }} статьи</h4>
 {% else %}
@@ -24,6 +24,7 @@
           <div class="mt-2">
             <span class="text-muted">Публикация: {{ post.date|date:'j F Y, время: H:i:s' }}</span>
             <p><b>Автор: </b><mark>{{ post.auther.first_name }}</mark></p>
+            <p><b>Категория: </b>{{ post.category }}</p>
           </div>
             <a href="{% url 'news-detail' post.id %}" class="btn btn-outline-dark">Читать дальше</a>
         </div>
@@ -50,4 +51,14 @@
     {% endif %}
   {% endif %}
 
+{% endblock %}
+
+{% block category %}
+    <h1 class="my-4">Категории</h1>
+    <div class="list-group">
+            <a href="{% url 'news-user' user.id %}" class="list-group-item">Все</a>
+        {% for category in categories %}
+            <a href="{% url 'news-user-category' user.id category.name %}" class="list-group-item">{{ category.name }}</a>
+        {% endfor %}
+    </div>
 {% endblock %}

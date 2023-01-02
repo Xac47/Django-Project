@@ -1,0 +1,25 @@
+{% extends 'home/base.html' %}
+
+{% block content %}
+<div class="alert alert-light">
+    {% for comment in comments %}
+        <div class="row">
+        <div>
+           <hr>
+           <img src="{{ comment.auther.profile.img.url }}" alt="{{ comment.auther }}" class="user_images">
+        </div>
+        <div class="mt-2">
+           <span class="text-muted">Публикация: {{ comment.date|date:'j F Y, время: H:i:s' }}</span>
+           <p><b>Автор:</b> <mark>{{ comment.auther.first_name }}</mark></p>
+        </div>
+      </div>
+        {{ comment.text }}
+    {% endfor %}
+    <br>
+    <br>
+    <form method="post">
+        {% csrf_token %}
+    {{ form }} <button type="submit">Отправить</button>
+    </form>
+</div>
+{% endblock %}

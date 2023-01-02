@@ -1,0 +1,40 @@
+{% extends 'home/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+{% if favorites_list %}
+   {% for favorites in favorites_list %}
+      <div class="alert alert-light">
+        <h1>{{ favorites.post.title }}</h1>
+        <hr>
+        <p>{{ favorites.post.text|truncatewords:50 }}</p>
+        <hr>
+        <div class="row">
+          <div>
+            <img src="{{ favorites.post.auther.profile.img.url }}" alt="{{ favorites.post.auther }}" class="user_images">
+          </div>
+          <div class="mt-2">
+            <span class="text-muted">Публикация: {{ favorites.post.date|date:'j F Y, время: H:i:s' }}</span>
+            <p><b>Автор: </b><mark>{{ favorites.post.auther.first_name }}</mark></p>
+            <p><b>Категория: </b>{{ favorites.post.category }}</p>
+          </div>
+            <a href="{% url 'news-detail' favorites.post.id %}" class="btn btn-outline-dark">Читать дальше</a>
+        </div>
+      </div>
+  {% endfor %}
+{% else %}
+<h1>У вас нету избранных</h1>
+{% endif %}
+
+{% endblock %}
+
+{% block category %}
+    <h1 class="my-4">Категории</h1>
+    <div class="list-group">
+            <a href="{% url 'favorites-list' user.id %}" class="list-group-item">Все</a>
+        {% for category in categories %}
+            <a href="{% url 'favorites-list-category' user.id category.name %}" class="list-group-item">{{ category.name }}</a>
+        {% endfor %}
+    </div>
+{% endblock %}
