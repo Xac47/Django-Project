@@ -3,13 +3,9 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-{% if count == 1 %}
-<h4>Всего написано {{ count }} статья</h4>
-{% elif count > 1 %}
-<h4>Написано {{ count }} статьи</h4>
-{% else %}
-<h4>Нет не единой статьи</h4>
-{% endif %}
+
+<h4>{{ news.total_count }}</h4>
+
 <hr>
    {% for post in news %}
       <div class="alert alert-light">

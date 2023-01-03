@@ -7,12 +7,27 @@ from django.urls import reverse
 from users.models import Profile
 
 
+class NewsQueryset(models.QuerySet):
+
+    # def is_favorites(self):
+    #     if self in Favorites.objects.filter(post=self):
+    #         return True
+    #     return False
+
+    def total_count(self):
+        if self.count():
+            return f'Вами написано {self.count()} статьи'
+        else:
+            return 'Вы не успели еще написать статьи'
+
 class News(models.Model):
     title = models.CharField(verbose_name='Заголовок',max_length=80)
     text = models.TextField(verbose_name='Описание')
     date = models.DateTimeField(default=timezone.now)
     auther = models.ForeignKey(User, verbose_name='Автор', on_delete=models.CASCADE)
     category = models.ForeignKey('Category', on_delete=models.CASCADE, null=True)
+
+    objects = NewsQueryset.as_manager()
 
     # sex_choice = (
     #     ('М', 'Мужской'),
@@ -66,3 +81,7 @@ class Favorites(models.Model):
 
     def __str__(self):
         return self.post.title
+
+    # def is_favorites(self):
+    #     pass
+    # придумать метод для проверки есть ли у пользователя данный пост в избранных

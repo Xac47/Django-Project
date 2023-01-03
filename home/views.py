@@ -44,7 +44,6 @@ class NewsUserListView(LoginRequiredMixin, ListView):
         ctx = super(NewsUserListView, self).get_context_data(**kwargs)
         ctx['title'] = 'Мои статьи'
         ctx['categories'] = Category.objects.all()
-        ctx['count'] = len(News.objects.filter(auther=self.kwargs['pk']))
 
         return ctx
 
