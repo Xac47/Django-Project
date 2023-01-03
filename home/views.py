@@ -5,13 +5,15 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
+from .common.views import TitleMixin
 from .forms import NewsCreateForm, CommentsPostsForm
 from .models import News, Category, CommentsPostsModel, Favorites
 
 
-class NewsListView(ListView):
+class NewsListView(TitleMixin, ListView):
     model = News
     context_object_name = 'news'
+    title = 'Главная страница'
     template_name = 'home/home.html'
     ordering = ['-pk']
     paginate_by = 5
@@ -23,15 +25,15 @@ class NewsListView(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         ctx = super(NewsListView, self).get_context_data(**kwargs)
-        ctx['title'] = 'Главная страница'
         ctx['categories'] = Category.objects.all()
 
         return ctx
 
 
-class NewsUserListView(LoginRequiredMixin, ListView):
+class NewsUserListView(TitleMixin, LoginRequiredMixin, ListView):
     model = News
     context_object_name = 'news'
+    title = 'Мои статьи'
     template_name = 'home/news-user.html'
     paginate_by = 5
 
@@ -42,7 +44,6 @@ class NewsUserListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         ctx = super(NewsUserListView, self).get_context_data(**kwargs)
-        ctx['title'] = 'Мои статьи'
         ctx['categories'] = Category.objects.all()
 
         return ctx
@@ -61,10 +62,10 @@ class NewsDetailView(DetailView):
         return ctx
 
 
-class NewsCreateView(LoginRequiredMixin, CreateView):
+class NewsCreateView(TitleMixin, LoginRequiredMixin, CreateView):
     model = News
+    title = 'Добавление статьи'
     template_name = 'home/news-created.html'
-    # fields = ['title', 'text']
     form_class = NewsCreateForm
 
     # Автоматический добавляет в models auther пользователя который создал эту статью (или обновил)
@@ -72,14 +73,10 @@ class NewsCreateView(LoginRequiredMixin, CreateView):
         form.instance.auther = self.request.user
         return super().form_valid(form)
 
-    def get_context_data(self, **kwargs):
-        ctx = super(NewsCreateView, self).get_context_data(**kwargs)
-        ctx['title'] = 'Добавление статьи'
 
-        return ctx
-
-class NewsUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class NewsUpdateView(TitleMixin, LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = News
+    title = 'Обновить статью'
     template_name = 'home/news-update.html'
     # fields = ['title', 'text']
     form_class = NewsCreateForm
@@ -95,15 +92,10 @@ class NewsUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         form.instance.auther = self.request.user
         return super().form_valid(form)
 
-    def get_context_data(self, **kwargs):
-        ctx = super(NewsUpdateView, self).get_context_data(**kwargs)
-        ctx['title'] = 'Обновить статью'
 
-        return ctx
-
-
-class NewsDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class NewsDeleteView(TitleMixin, LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = News
+    title = 'Удалить статью'
     template_name = 'home/news-delete.html'
     success_url = '/'
     context_object_name = 'post'
@@ -114,13 +106,6 @@ class NewsDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == news.auther:
             return True
         return False
-
-
-    def get_context_data(self, **kwargs):
-        ctx = super(NewsDeleteView, self).get_context_data(**kwargs)
-        ctx['title'] = 'Удалить статью'
-
-        return ctx
 
 
 @login_required
