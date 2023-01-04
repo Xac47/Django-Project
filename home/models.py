@@ -17,7 +17,7 @@ class NewsQueryset(models.QuerySet):
     def total_count(self):
         if self.count() == 1:
             return f'Вами написано {self.count()} статья'
-        elif self.count() > 2:
+        elif self.count() > 1:
             return f'Вами написано {self.count()} статьи'
         else:
             return 'Вы не успели еще написать не одну статью'
