@@ -19,11 +19,13 @@
             <p><b>Категория: </b>{{ post.category }}</p>
           </div>
             <a href="{% url 'news-detail' post.id %}" class="btn btn-outline-dark">Читать дальше</a>
+
             <div class="card-footer text-center">
                 <a href="{% url 'favorites-add' post.id %}">
                     <i class="fa-regular fa-heart"></i>
                 </a>
             </div>
+
         </div>
       </div>
   {% endfor %}

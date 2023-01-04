@@ -9,6 +9,9 @@ from users.models import Profile
 
 class NewsQueryset(models.QuerySet):
 
+    # request.user in self.favorites
+
+
     # def is_favorites(self):
     #     if self in Favorites.objects.filter(post=self):
     #         return True

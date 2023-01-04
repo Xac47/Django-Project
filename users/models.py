@@ -8,11 +8,11 @@ class Profile(models.Model):
     img = models.ImageField(verbose_name='Фото', default='default_user.jpg', upload_to='users_images')
 
     class Meta:
-        verbose_name = 'Профайл'
-        verbose_name_plural = 'Профайлы'
+        verbose_name = 'Профиль'
+        verbose_name_plural = 'Профилы'
 
     def __str__(self):
-        return f'Профайл пользователя {self.user.username}'
+        return f'Профиль пользователя {self.user.username}'
 
     def save(self, *args, **kwargs):
         super().save()
