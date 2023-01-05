@@ -14,9 +14,11 @@
             <img src="{{ post.auther.profile.img.url }}" alt="{{ post.auther }}" class="user_images">
           </div>
           <div class="mt-2">
-            <span class="text-muted">Публикация: {{ post.date|date:'j F Y, время: H:i:s' }}</span>
-            <p><b>Автор: </b><mark><a href="{% url 'news-user' post.auther.pk %}">{{ post.auther.first_name }}</a></mark></p>
-            <p><b>Категория: </b>{{ post.category }}</p>
+            <span class="text-muted"><b>Публикация:</b> {{ post.date|date:'j F Y, время: H:i:s' }}</span>
+              <br>
+            <b>Автор: </b><mark><a href="{% url 'news-user' post.auther.pk %}">{{ post.auther.first_name }}</a></mark>
+              <br>
+            <b>Категория: </b>{{ post.category }}
           </div>
             <a href="{% url 'news-detail' post.id %}" class="btn btn-outline-dark">Читать дальше</a>
 

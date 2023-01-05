@@ -3,9 +3,9 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-
+{% if is_auther %}
 <h4>{{ news.total_count }}</h4>
-
+{% endif %}
 <hr>
    {% for post in news %}
       <div class="alert alert-light">
@@ -18,9 +18,11 @@
             <img src="{{ post.auther.profile.img.url }}" alt="{{ post.auther }}" class="user_images">
           </div>
           <div class="mt-2">
-            <span class="text-muted">Публикация: {{ post.date|date:'j F Y, время: H:i:s' }}</span>
-            <p><b>Автор: </b><mark>{{ post.auther.first_name }}</mark></p>
-            <p><b>Категория: </b>{{ post.category }}</p>
+              <span class="text-muted"><b>Публикация:</b> {{ post.date|date:'j F Y, время: H:i:s' }}</span>
+              <br>
+            <b>Автор: </b><mark>{{ post.auther.first_name }}</mark>
+              <br>
+            <b>Категория: </b>{{ post.category }}
           </div>
             <a href="{% url 'news-detail' post.id %}" class="btn btn-outline-dark">Читать дальше</a>
         </div>
@@ -52,9 +54,9 @@
 {% block category %}
     <h1 class="my-4">Категории</h1>
     <div class="list-group">
-            <a href="{% url 'news-user' user.id %}" class="list-group-item">Все</a>
+            <a href="{% url 'news-user' user_pk %}" class="list-group-item">Все</a>
         {% for category in categories %}
-            <a href="{% url 'news-user-category' user.id category.name %}" class="list-group-item">{{ category.name }}</a>
+            <a href="{% url 'news-user-category' user_pk category.name %}" class="list-group-item">{{ category.name }}</a>
         {% endfor %}
     </div>
 {% endblock %}

@@ -44,7 +44,9 @@ class NewsUserListView(TitleMixin, LoginRequiredMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         ctx = super(NewsUserListView, self).get_context_data(**kwargs)
+        ctx['user_pk'] = self.kwargs['pk']
         ctx['categories'] = Category.objects.all()
+        ctx['is_auther'] = True if self.kwargs['pk'] == self.request.user else False
 
         return ctx
 
