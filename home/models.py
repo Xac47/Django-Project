@@ -11,7 +11,6 @@ class NewsQueryset(models.QuerySet):
 
     # request.user in self.favorites
 
-
     # def is_favorites(self):
     #     if self in Favorites.objects.filter(post=self):
     #         return True
@@ -25,8 +24,9 @@ class NewsQueryset(models.QuerySet):
         else:
             return 'Вы не успели еще написать не одну статью'
 
+
 class News(models.Model):
-    title = models.CharField(verbose_name='Заголовок',max_length=80)
+    title = models.CharField(verbose_name='Заголовок', max_length=80, db_index=True)
     text = models.TextField(verbose_name='Описание')
     date = models.DateTimeField(default=timezone.now)
     auther = models.ForeignKey(User, verbose_name='Автор', on_delete=models.CASCADE)
@@ -52,6 +52,7 @@ class News(models.Model):
         verbose_name = 'Статья'
         verbose_name_plural = 'Статьи'
 
+
 class Category(models.Model):
     name = models.CharField('Категория', max_length=80, unique=True)
 
@@ -61,6 +62,7 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class CommentsPostsModel(models.Model):
     text = models.TextField(verbose_name='комментарии')
