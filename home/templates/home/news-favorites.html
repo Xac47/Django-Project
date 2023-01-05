@@ -3,7 +3,9 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+
 {% if favorites_list %}
+
    {% for favorites in favorites_list %}
       <div class="alert alert-light">
         <h1>{{ favorites.post.title }}</h1>
@@ -32,6 +34,7 @@
         </div>
       </div>
   {% endfor %}
+
 {% else %}
 <h1>У вас нету избранных</h1>
 {% endif %}

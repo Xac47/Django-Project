@@ -3,9 +3,12 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+
 {% if is_auther %}
 <h4>{{ news.total_count }}</h4>
 {% endif %}
+
+{% if news %}
 <hr>
    {% for post in news %}
       <div class="alert alert-light">
@@ -30,6 +33,7 @@
   {% endfor %}
 
 {% if is_paginated %}
+
     {% if page_obj.has_previous %}
       <a href="{% url 'home' %}" class="btn btn-outline-dark">Начало</a>
       <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-dark">Предыдущая</a>
@@ -47,7 +51,12 @@
       <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-dark">Следующая</a>
       <a href="?page={{ page_obj.paginator.num_pages}}" class="btn btn-outline-dark">Последняя</a>
     {% endif %}
+
   {% endif %}
+
+{% else %}
+<h4>Ничего не найдено</h4>
+{% endif %}
 
 {% endblock %}
 
