@@ -1,27 +1,24 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetConfirmView
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, DetailView
+from django.views.generic import CreateView, DetailView, UpdateView
 from django.contrib import messages, auth
 
+from home.common.views import TitleMixin
 from .forms import UserSignupForm, UserLoginForm, UserUpdateForm, ProfileImageForm, PassResetForm, PassResetConfirmForm
 
 
-class UserSignupView(CreateView):
+class UserSignupView(TitleMixin, CreateView):
     model = User
     form_class = UserSignupForm
+    title = 'Регистрация'
     template_name = 'users/signup.html'
     success_url = reverse_lazy('login')
-
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        ctx = super(UserSignupView, self).get_context_data(**kwargs)
-        ctx['title'] = 'Регистрация'
-
-        return ctx
 
 
 # def signup(request):
@@ -42,16 +39,11 @@ class UserSignupView(CreateView):
 #                   }
 #                   )
 
-class UserLoginView(LoginView):
-    form_class = UserLoginForm
+class UserLoginView(TitleMixin, LoginView):
+    title = 'Авторизация'
     template_name = 'users/login.html'
+    form_class = UserLoginForm
 
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        ctx = super(UserLoginView, self).get_context_data(**kwargs)
-        ctx['title'] = 'Авторизация'
-
-        return ctx
 
 # class UserLogoutView(LogoutView):
 #     template_name = 'users/exit.html'
@@ -92,23 +84,13 @@ def profile(request):
 
 
 class PassResetView(PasswordResetView):
+    title = 'Восстановить пароль'
     template_name = 'users/pass-reset.html'
     form_class = PassResetForm
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        ctx = super(PassResetView, self).get_context_data(**kwargs)
-        ctx['title'] = 'Восстановить пароль'
-        ctx['text'] = 'Восстановление пароля'
 
-        return ctx
-
-
-class PassResetConfirmView(PasswordResetConfirmView):
+class PassResetConfirmView(TitleMixin, PasswordResetConfirmView):
+    title = 'Новый пароль'
     template_name = 'users/password-reset-confirm.html'
     form_class = PassResetConfirmForm
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        ctx = super(PassResetConfirmView, self).get_context_data(**kwargs)
-        ctx['title'] = 'Новый пароль'
-
-        return ctx

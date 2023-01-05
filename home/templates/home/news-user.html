@@ -4,11 +4,10 @@
 
 {% block content %}
 
-{% if is_auther %}
-<h4>{{ news.total_count }}</h4>
-{% endif %}
 
-{% if news %}
+<h4>{{ news.total_count }}</h4>
+
+
 <hr>
    {% for post in news %}
       <div class="alert alert-light">
@@ -53,10 +52,6 @@
     {% endif %}
 
   {% endif %}
-
-{% else %}
-<h4>Ничего не найдено</h4>
-{% endif %}
 
 {% endblock %}
 
