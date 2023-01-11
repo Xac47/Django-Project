@@ -27,13 +27,12 @@ class NewsCreateForm(forms.ModelForm):
 
     class Meta:
         model = News
-        fields = ['title', 'text', 'category']
+        fields = ('title', 'text', 'category')
 
-class CommentsPostsForm(forms.ModelForm):
+class CommentForm(forms.ModelForm):
     text = forms.CharField(
-        required=False,
         label='',
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Комментарии'})
+        widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Комментарии', 'rows': 4, 'cols': 50})
     )
 
     class Meta:

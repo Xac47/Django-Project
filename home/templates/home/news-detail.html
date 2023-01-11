@@ -26,5 +26,16 @@
 
         {% endif %}
     </div>
-
+    {% for comment in post.comments.all %}
+    <hr>
+    {{ comment.text }}<br>
+    {{ comment.auther.first_name }}<br>
+    {{ comment.date }}<br>
+    <hr>
+    {% endfor %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <button class="btn btn-outline-dark" type="submit">Отправить</button>
+    </form>
 {% endblock %}

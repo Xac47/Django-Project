@@ -13,10 +13,11 @@ from home.common.views import TitleMixin
 from .forms import UserSignupForm, UserLoginForm, UserUpdateForm, ProfileImageForm, PassResetForm, PassResetConfirmForm
 
 
-class UserSignupView(TitleMixin, CreateView):
+class UserSignupView(TitleMixin, SuccessMessageMixin, CreateView):
     model = User
     form_class = UserSignupForm
     title = 'Регистрация'
+    success_message = 'Вы успешно зарегистрировались'
     template_name = 'users/signup.html'
     success_url = reverse_lazy('login')
 
@@ -25,7 +26,7 @@ class UserSignupView(TitleMixin, CreateView):
 #     if request.method == 'POST':
 #         form = UserSignupForm(request.POST)
 #         if form.is_valid():
-#             # form.save()
+#             form.save()
 #             username = form.cleaned_data.get('username')
 #             messages.success(request, f'Пользователь {username} успешно создан')
 #             return redirect('home')
@@ -83,7 +84,7 @@ def profile(request):
     return render(request, 'users/profile.html', data)
 
 
-class PassResetView(PasswordResetView):
+class PassResetView(TitleMixin, PasswordResetView):
     title = 'Восстановить пароль'
     template_name = 'users/pass-reset.html'
     form_class = PassResetForm

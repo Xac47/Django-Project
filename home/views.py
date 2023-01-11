@@ -1,12 +1,16 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
+from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic.edit import FormMixin
 
 from .common.views import TitleMixin
-from .forms import NewsCreateForm, CommentsPostsForm
+from .forms import NewsCreateForm, CommentForm
 from .models import News, Category, CommentsPostsModel, Favorites
 
 
@@ -31,7 +35,7 @@ class NewsListView(TitleMixin, ListView):
 
 
 class NewsUserListView(TitleMixin, LoginRequiredMixin, ListView):
-    model = News
+    model = User
     context_object_name = 'news'
     title = 'Мои статьи'
     template_name = 'home/news-user.html'
@@ -40,7 +44,7 @@ class NewsUserListView(TitleMixin, LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         user = get_object_or_404(User, pk=self.kwargs['pk']) # берет из адресной строки pk
-        return News.objects.filter(auther=user).order_by('-pk') if not self.kwargs.get('category_name') else News.objects.filter(auther=user, category__name=self.kwargs['category_name']).order_by('-pk')
+        return user.my_posts.order_by('-pk') if not self.kwargs.get('category_name') else user.my_posts.filter(category__name=self.kwargs['category_name']).order_by('-pk')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         ctx = super(NewsUserListView, self).get_context_data(**kwargs)
@@ -51,21 +55,34 @@ class NewsUserListView(TitleMixin, LoginRequiredMixin, ListView):
 
 
 
-class NewsDetailView(DetailView):
+class NewsDetailView(FormMixin, DetailView):
     model = News
     template_name = 'home/news-detail.html'
     context_object_name = 'post'
-
-    def get_context_data(self, **kwargs):
-        ctx = super(NewsDetailView, self).get_context_data(**kwargs)
-        ctx['title'] = News.objects.get(pk=self.kwargs['pk'])
-
-        return ctx
+    form_class = CommentForm
 
 
-class NewsCreateView(TitleMixin, LoginRequiredMixin, CreateView):
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('news-detail', kwargs={'pk': self.get_object().pk})
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.post = self.get_object()
+        self.object.auther = self.request.user
+        self.object.save()
+        return super().form_valid(form)
+
+class NewsCreateView(TitleMixin, LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = News
     title = 'Добавление статьи'
+    success_message = 'Вы успешно создали пост'
     template_name = 'home/news-created.html'
     form_class = NewsCreateForm
 
@@ -75,12 +92,14 @@ class NewsCreateView(TitleMixin, LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class NewsUpdateView(TitleMixin, LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class NewsUpdateView(TitleMixin, LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
     model = News
     title = 'Обновить статью'
+    success_message = 'Вы успешно обновили пост'
     template_name = 'home/news-update.html'
     # fields = ['title', 'text']
     form_class = NewsCreateForm
+
 
     # Функция проверяет является ли пользователь который хочет обновить статью создателям этой статьи, проверка идет по id
     def test_func(self):
@@ -94,9 +113,10 @@ class NewsUpdateView(TitleMixin, LoginRequiredMixin, UserPassesTestMixin, Update
         return super().form_valid(form)
 
 
-class NewsDeleteView(TitleMixin, LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class NewsDeleteView(TitleMixin, LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView):
     model = News
     title = 'Удалить статью'
+    success_message = 'Пост удален'
     template_name = 'home/news-delete.html'
     success_url = '/'
     context_object_name = 'post'
@@ -136,51 +156,3 @@ def favorites_list(request, pk, category_name=None):
 
     return render(request, 'home/news-favorites.html', context)
 
-# class CommentCreateView(CreateView):
-#     model = CommentsPostsModel
-#     template_name = 'home/create-comment.html'
-#     form_class = CommentsPostsForm
-#
-#     def get_context_data(self, **kwargs):
-#         ctx = super(CommentCreateView, self).get_context_data()
-#         ctx['post'] = self.kwargs['pk']
-#         ctx['comments'] = CommentsPostsModel.objects.filter(post=self.kwargs['pk'])
-#         return ctx
-#
-#     def form_valid(self, form):
-#         form.instance.auther, form.instance.post = self.request.user, self.kwargs['pk']
-#         return super().form_valid(form)
-
-# def createComment(request, pk):
-#     if request.method == 'POST':
-#         comments = CommentsPostsModel.objects.filter(post=request.GET['pk'])
-#         form = CommentsPostsForm(request.POST['text'], pk, request.user)
-#         if form.is_valid():
-#             form.save()
-#     else:
-#         form = CommentsPostsForm()
-#         comments = CommentsPostsModel.objects.filter(post=request.GET['pk'])
-#         print(request.GET)
-#
-#     context = {
-#         'form': form,
-#         'comments': comments,
-#     }
-#
-#     return render(request, 'home/create-comment.html', context)
-
-# class CommentListView(ListView):
-#     model = CommentsPostsModel
-#     template_name = 'home/list-comment.html'
-#     context_object_name = 'comments'
-#
-#     def get_queryset(self):
-#         pk = self.kwargs['pk']
-#         return CommentsPostsModel.objects.filter(post=pk)
-#
-#     def get_context_data(self, *, object_list=None, **kwargs):
-#         ctx = super(CommentListView, self).get_context_data()
-#         ctx['form'] = CommentsPostsForm()
-#
-#         return ctx
-#

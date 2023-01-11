@@ -26,10 +26,10 @@ class NewsQueryset(models.QuerySet):
 
 
 class News(models.Model):
-    title = models.CharField(verbose_name='Заголовок', max_length=80, db_index=True)
+    title = models.CharField(verbose_name='Заголовок', max_length=20, db_index=True)
     text = models.TextField(verbose_name='Описание')
     date = models.DateTimeField(default=timezone.now)
-    auther = models.ForeignKey(User, verbose_name='Автор', on_delete=models.CASCADE)
+    auther = models.ForeignKey(User, verbose_name='Автор', on_delete=models.CASCADE, related_name='my_posts')
     category = models.ForeignKey('Category', on_delete=models.CASCADE, null=True)
 
     objects = NewsQueryset.as_manager()
@@ -67,7 +67,7 @@ class Category(models.Model):
 class CommentsPostsModel(models.Model):
     text = models.TextField(verbose_name='комментарии')
     date = models.DateTimeField(auto_now_add=True)
-    post = models.ForeignKey(News, on_delete=models.CASCADE)
+    post = models.ForeignKey(News, on_delete=models.CASCADE, related_name='comments')
     auther = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
@@ -79,8 +79,8 @@ class CommentsPostsModel(models.Model):
 
 
 class Favorites(models.Model):
-    post = models.ForeignKey(News, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(News, on_delete=models.CASCADE, verbose_name='Пост')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор')
 
     class Meta:
         verbose_name = 'Избранное'
@@ -89,6 +89,3 @@ class Favorites(models.Model):
     def __str__(self):
         return self.post.title
 
-    # def is_favorites(self):
-    #     pass
-    # придумать метод для проверки есть ли у пользователя данный пост в избранных

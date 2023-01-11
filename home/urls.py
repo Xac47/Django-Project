@@ -16,9 +16,6 @@ urlpatterns = [
     path('news/<int:pk>/', views.NewsDetailView.as_view(), name='news-detail'),
     path('news/favorites/add/<int:pk>/', views.favorites_add, name='favorites-add'),
 
-    # path('news/<int:pk>/comment/', views.CommentListView.as_view(), name='list-comment'),
-    # path('news/<int:pk>/add/comment/', views.CommentCreateView.as_view(), name='create-comment'),
-
 
     path('news/<int:pk>/update/', views.NewsUpdateView.as_view(), name='news-update'),
     path('news/<int:pk>/delete/', views.NewsDeleteView.as_view(), name='news-delete'),
